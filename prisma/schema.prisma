@@ -1,0 +1,34 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "sqlite"
+    url      = env("DATABASE_URL")
+}
+
+model Mail {
+    id          String      @id @default(cuid())
+
+    html        String
+    content     String
+
+    senderEmail String 
+    senderName  String
+    subject     String
+
+    createdAt   DateTime   @default(now())
+    updatedAt   DateTime   @updatedAt
+    expireAt    DateTime
+
+    mailbox      MailBox    @relation(fields: [mailboxOwner], references: [mail], onDelete: Cascade)
+    mailboxOwner String     
+}
+
+model MailBox {
+    mail  String  @id
+    mails Mail[]
+}
